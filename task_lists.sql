@@ -14,7 +14,6 @@ completed BOOLEAN DEFAULT FALSE
 PATCH /tasks/:id/complete
 
 deadline TIMESTAMP
-
 tags
 task_tags (junction table)
 
