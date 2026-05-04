@@ -55,5 +55,8 @@
 - [ ] Frontend: React.js / Tailwind CSS
 - [ ] State Management: Context API 
 - [ ] Storage: 
-- [ ] Deployment: 
+- [ ] Deployment:
+
+### License
+ MIT License
 
