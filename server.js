@@ -5,8 +5,6 @@ const jwt = require('jsonwebtoken');
 const app = express();
 
 app.use(express.json());
-
-
 //'User Registration' endpoint - AUTH
 app.post('/auth/register', async (req, res) => {
   try {
@@ -95,8 +93,6 @@ app.post('/auth/login', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
-
-
 
 //------- ROUTES --------
 
