@@ -97,14 +97,28 @@ app.post('/auth/login', async (req, res) => {
 //------- ROUTES --------
 
 // 'Add Task' endpoint - CREATE
-app.post('/tasks', async (req, res) => {
+app.post('/tasks', authenticateToken, async (req, res) => {
   try {
-    const { title, description } = req.body;
+    const { title, description, tag_name, tag_color, link_url, reminder_at } = req.body;
+    const userId = req.user.user_id;
+
+    // Validation: Title is required
+    if (!title || title.trim().length === 0) {
+      return res.status(400).json({ error: "Title is required." });
+    }
+
+    //Validation; If a tag color is sent, make sure it looks like a hex code (e.g., #FFFFFF)
+    if (tag_color && !/^#[0-9A-F]{6}$/i.test(tag_color)) {
+      return res.status(400).json({ error: "Invalid hex color format. Correct format is #FFFFFF" });
+    }
+
     const newTask = await pool.query(
-      'INSERT INTO tasks (title, description) VALUES ($1, $2) RETURNING *',
-      [title, description]
+      `INSERT INTO tasks (title, description, tag_name, tag_color, link_url, reminder_at, user_id) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+      [title, description, tag_name, tag_color, link_url, reminder_at, userId]
     );
-    res.json(newTask.rows[0]);
+
+    res.status(201).json(newTask.rows[0]);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -125,28 +139,44 @@ app.get('/tasks', async (req, res) => {
   }
 });
 
-// 'Mark a task as completed or change the title' endpoint - UPDATE
-app.put('/tasks/:id', async (req, res) => {
-
+// 'Update Task' endpoint - UPDATE
+app.put('/tasks/:id', authenticateToken, async (req, res) => {
   try {
-    const { id } = req.params; // Get ID from the URL (e.g., /tasks/1)
-    const { is_completed } = req.body; // Get the new status from the JSON body
+    const { id } = req.params;
+    const userId = req.user.user_id;
+    
+    //Accept the status update or any of the new metadata fields
+    const { is_completed, title, description, tag_name, tag_color, link_url, reminder_at } = req.body;
 
+    //Hex Color Validation (when/if they are changing the color)
+    if (tag_color && !/^#[0-9A-F]{6}$/i.test(tag_color)) {
+      return res.status(400).json({ error: "Invalid hex color format. Use something like #FF5733" });
+    }
+
+    //Allows changing any metadata field, making sure the task belongs to the user
     const updateTask = await pool.query(
-      'UPDATE tasks SET is_completed = $1 WHERE id = $2 RETURNING *',
-      [is_completed, id]
+      `UPDATE tasks 
+       SET is_completed = COALESCE($1, is_completed),
+           title = COALESCE($2, title),
+           description = COALESCE($3, description),
+           tag_name = COALESCE($4, tag_name),
+           tag_color = COALESCE($5, tag_color),
+           link_url = COALESCE($6, link_url),
+           reminder_at = COALESCE($7, reminder_at)
+       WHERE id = $8 AND user_id = $9 
+       RETURNING *`,
+      [is_completed, title, description, tag_name, tag_color, link_url, reminder_at, id, userId]
     );
 
     if (updateTask.rows.length === 0) {
-      return res.status(404).json("Task not found");
+      return res.status(404).json({ error: "Task not found or unauthorized" });
     }
 
-    res.json("Task was updated!");
+    res.json({ message: "Task was updated successfully!", task: updateTask.rows[0] });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
   }
-
 });
 
 // 'Remove Task' endpoint - DELETE

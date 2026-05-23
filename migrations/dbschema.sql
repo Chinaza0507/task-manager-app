@@ -6,6 +6,7 @@ CREATE TABLE tasks (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+
 --Create the Users table
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -16,3 +17,9 @@ CREATE TABLE users (
 
 --Link Tasks to Users (Foreign Key)
 ALTER TABLE tasks ADD COLUMN user_id INTEGER REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE tasks 
+ADD COLUMN tag_name VARCHAR(50),       -- like 'Exam', 'Project', 'Personal'
+ADD COLUMN tag_color VARCHAR(7),      -- '#FF5733' a Hex code for the frontend to color it
+ADD COLUMN link_url TEXT,             -- For school dashboard or assignment hyperlinks
+ADD COLUMN reminder_at TIMESTAMPTZ;   -- The exact date/time a notification should fire
