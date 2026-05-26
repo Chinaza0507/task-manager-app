@@ -29,9 +29,11 @@
 
 ### Testing Requirements
 
-​ Feature Check (Functional Testing) : We will test every single button (Create, Edit, Delete, Tag) to ensure they do exactly what they are supposed to do.
+​ Feature Check (Functional Testing) : We tested every single button (Create, Edit, Delete, Tag) to ensure they do exactly what they are supposed to do.
 
-​ Device Check (Compatibility Testing) : We will test the app on different web browsers (like Chrome and Safari) and different phones (iPhone vs. Android) to make sure it looks good everywhere.
+​ Device Check (Compatibility Testing) : We tested the app on different web browsers (like Chrome and Safari).
+
+### Pending requirement testing
 
 ​ Error Handling : We need to test what happens when something goes wrong. For example, if a student tries to save a task without a title, the app should show a helpful warning message instead of crashing.
 
@@ -54,8 +56,6 @@
 ### Technical Stack
 - [ ] Frontend: React.js / Tailwind CSS
 - [ ] State Management: Context API 
-- [ ] Storage: 
-- [ ] Deployment:
 
 ### License
    MIT License
