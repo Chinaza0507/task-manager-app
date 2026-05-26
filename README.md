@@ -29,11 +29,13 @@
 
 ### Testing Requirements
 
-​ Feature Check (Functional Testing) : We will test every single button (Create, Edit, Delete, Tag) to ensure they do exactly what they are supposed to do.
+​ Feature Check (Functional Testing) : We tested every single button (Create, Edit, Delete, Tag) to ensure they do exactly what they are supposed to do.
 
-​ Device Check (Compatibility Testing) : We will test the app on different web browsers (like Chrome and Safari) and different phones (iPhone vs. Android) to make sure it looks good everywhere.
+​ Device Check (Compatibility Testing) : We tested the app on different web browsers (like Chrome and Safari) and different phones (iPhone vs. Android) to make sure it looks good everywhere.
 
-​ Error Handling : We need to test what happens when something goes wrong. For example, if a student tries to save a task without a title, the app should show a helpful warning message instead of crashing.
+​ Error Handling : We tested to see what happens when something goes wrong. For example, if a student tries to save a task without a title, the app should show a helpful warning message instead of crashing.
+
+### Pending testing
 
 ​ User Acceptance : Before the final launch, a small group of students will try the app to confirm it actually helps them manage their time effectively.
 
@@ -53,9 +55,7 @@
 
 ### Technical Stack
 - [ ] Frontend: React.js / Tailwind CSS
-- [ ] State Management: Context API 
-- [ ] Storage: 
-- [ ] Deployment:
+- [ ] State Management: Context API
 
 ### License
    MIT License
