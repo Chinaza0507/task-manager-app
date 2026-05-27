@@ -1,5 +1,5 @@
 import getTimeGreeting from "./_components/getTimeGreeting";
-import StudyGroupActivePill from "./_components/StudyGroupActivePill";
+import StudyGroupActivePill from "@/components/StudyGroupActivePill";
 import FocusSessionCard from "./_components/cards/FocusSessionCard";
 import PerformanceCard from "./_components/cards/PerformanceCard";
 

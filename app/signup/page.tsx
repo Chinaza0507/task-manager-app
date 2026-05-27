@@ -2,8 +2,21 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function SignUpPage() {
+  const [formState, setFormState] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState<string | null>(null);
+
+  const isFormComplete =
+    formState.name.trim().length > 0 &&
+    formState.email.trim().length > 0 &&
+    formState.password.length >= 6;
+
   return (
     <main className="min-h-screen bg-[#EEDFFB]">
       {/* Shared outer gutters so left/right page edges are always equal */}
@@ -40,6 +53,13 @@ export default function SignUpPage() {
                 className="mt-10 space-y-5"
                 onSubmit={(e) => {
                   e.preventDefault();
+                  if (!isFormComplete) {
+                    setError(
+                      "Please enter your name, a valid email, and a password with at least 6 characters.",
+                    );
+                    return;
+                  }
+                  setError(null);
                   // UI-only for now
                   window.location.href = "/dashboard";
                 }}
@@ -58,6 +78,14 @@ export default function SignUpPage() {
                     placeholder="Enter your full name"
                     className="mt-2 w-full rounded-xl border border-[#DDD5EE] bg-white px-4 py-3 text-[15px] text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-[#7C3AED]/20"
                     autoComplete="name"
+                    value={formState.name}
+                    onChange={(event) =>
+                      setFormState((prev) => ({
+                        ...prev,
+                        name: event.target.value,
+                      }))
+                    }
+                    required
                   />
                 </div>
 
@@ -75,6 +103,14 @@ export default function SignUpPage() {
                     placeholder="name@example.com"
                     className="mt-2 w-full rounded-xl border border-[#DDD5EE] bg-white px-4 py-3 text-[15px] text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-[#7C3AED]/20"
                     autoComplete="email"
+                    value={formState.email}
+                    onChange={(event) =>
+                      setFormState((prev) => ({
+                        ...prev,
+                        email: event.target.value,
+                      }))
+                    }
+                    required
                   />
                 </div>
 
@@ -92,6 +128,15 @@ export default function SignUpPage() {
                     placeholder="••••••••"
                     className="mt-2 w-full rounded-xl border border-[#DDD5EE] bg-white px-4 py-3 text-[15px] text-[#111827] placeholder:text-[#9CA3AF] outline-none focus:border-[#7C3AED] focus:ring-2 focus:ring-[#7C3AED]/20"
                     autoComplete="new-password"
+                    value={formState.password}
+                    onChange={(event) =>
+                      setFormState((prev) => ({
+                        ...prev,
+                        password: event.target.value,
+                      }))
+                    }
+                    minLength={6}
+                    required
                   />
                   <p className="mt-2 text-[12px] text-[#6B7280]">
                     Password must be at least 6 characters.
@@ -100,10 +145,15 @@ export default function SignUpPage() {
 
                 <button
                   type="submit"
-                  className="w-full rounded-xl bg-[#7C3AED] py-3.5 text-white font-semibold text-[15px] hover:opacity-95 active:opacity-90 transition"
+                  className="w-full rounded-xl bg-[#7C3AED] py-3.5 text-white font-semibold text-[15px] hover:opacity-95 active:opacity-90 transition disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={!isFormComplete}
                 >
                   Create free account
                 </button>
+
+                {error ? (
+                  <p className="text-[12px] text-red-600">{error}</p>
+                ) : null}
 
                 <p className="text-[12px] text-[#9CA3AF] leading-relaxed">
                   By creating an account, you agree to our{" "}

@@ -183,11 +183,17 @@ export default function DashboardShell({
         </nav>
 
         <div className="mt-auto pt-8 space-y-2">
-          <a
-            className="flex items-center gap-3 px-4 py-3 rounded-xl text-[#151C27] hover:bg-white/60"
-            href="#"
+          {/* Settings Link with Active Highlight */}
+          <Link
+            href="/settings"
+            className={cx(
+              "flex items-center gap-3 px-4 py-3 rounded-xl transition-colors select-none",
+              pathname === "/settings" 
+                ? "bg-[#8B5CF6] text-white font-semibold" 
+                : "text-[#151C27] hover:bg-white/60"
+            )}
           >
-            <span className="text-[#6B7280]">
+            <span className={cx(pathname === "/settings" ? "text-white" : "text-[#6B7280]")}>
               <Icon>
                 <Settings size={18} strokeWidth={2} />
               </Icon>
@@ -200,7 +206,8 @@ export default function DashboardShell({
             >
               Settings
             </span>
-          </a>
+          </Link>
+
           <a
             className="flex items-center gap-3 px-4 py-3 rounded-xl text-[#151C27] hover:bg-white/60"
             href="#"
@@ -326,16 +333,16 @@ export default function DashboardShell({
                     </span>
                     Profile
                   </a>
-                  <a
+                  <Link
                     role="menuitem"
-                    href="#"
+                    href="/settings"
                     className="flex items-center gap-2 rounded-lg px-3 py-2 hover:bg-[#F3F4F6]"
                   >
                     <span className="text-[#6B7280]">
                       <Settings size={16} strokeWidth={2} />
                     </span>
                     Settings
-                  </a>
+                  </Link>
                   <a
                     role="menuitem"
                     href="#"
@@ -353,7 +360,7 @@ export default function DashboardShell({
         </div>
       </header>
 
-      {/* Scrollable page content (sidebar/topbar stay fixed) */}
+      {/* Scrollable page content */}
       <main className={cx("pt-[76px] px-10", contentLeft)}>{children}</main>
     </div>
   );
