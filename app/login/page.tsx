@@ -12,7 +12,7 @@ export default function LoginPage() {
   // Note: assets inside `public/` are referenced from the site root ("/...").
   const heroImage = useMemo(
     () => ({
-      src: "/today's focus.png",
+      src: "/today's focs.png",
       alt: "Today's focus preview",
     }),
     [],
