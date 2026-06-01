@@ -1,97 +1,174 @@
-# TaskPilot - A Student Task Manager
+# ✈️ TaskPilot
 
-  **​A centralized productivity app designed to help students balance academic deadlines, extracurriculars, and personal study goals.**
+Navigate your academic workload with confidence.
+TaskPilot is a smart, student-focused task manager built to reduce academic overwhelm — helping students organize assignments, track deadlines, collaborate with peers, and stay on top of every course, all in one place.
 
-## Scope and Requirements 
-### Problem Statement
- Students often struggle to track deadlines across multiple platforms (LMS, email, syllabi). This tool consolidates those inputs into a single, prioritized view to reduce "deadline anxiety" and improve time management.
+[![Beta](https://img.shields.io/badge/Status-Beta-F59E0B?style=flat-square)](https://task-manager-app-zeta-gules.vercel.app/)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=flat-square&logo=prisma)](https://www.prisma.io/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 
-### Front-end: Functional Requirements 
- The Digital To-Do List : Students can type in a task, change the details later, or delete it if they don't need to do it anymore (Search, Edit and Delete button).
- It includes a specific spot to pick a date and time.
+---
+[🚀 Live Demo](https://task-manager-app-zeta-gules.vercel.app/)
 
-​ Color-Coded Urgency: To help students stay organized at a glance, tasks will automatically change colors: Red for "Do this now!", Yellow for "Soon," and Green for "Finished!"
+[🐛 Report a Bug](https://github.com/Chinaza0507/task-manager-app/issues)
 
-​ The "Today" View: A special screen that shows only what is due today. If a student misses a task, the app lets them quickly push it to tomorrow with one click.
+[💡 Request a Feature](https://github.com/Chinaza0507/task-manager-app/issues)
 
-​ The Progress Dashboard : A simple chart that shows the student how much of their work is done (e.g., "You are 70% finished with your weekly goals!").
+---
 
-### Front-end: Non-functional Requirements 
- Simple to Use (Intuitive) : The app should be so simple that a student can figure out how to add a task in seconds without needing a manual.
+## 📋 Table of Contents
 
-​ Speed (Snappiness) : When a student clicks a button or changes a task to "Done," the screen should update instantly so it doesn't feel sluggish or broken.
+- [About the Project](#-about-the-project)
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Getting Started](#-getting-started)
+- [Project Structure](#-project-structure)
+- [Future Improvements](#-future-improvements)
+- [Acknowledgements](#-acknowledgements)
+- [License](#-license)
 
-​ Reliability : The app must be "tough." If the student’s phone dies or they close the browser, their saved tasks must still be there when they come back.
+  
+  ## 🎯 About the Project
 
-​ Works on All Devices:Whether the student is on a laptop in class or using their phone on the bus, the app should resize itself to fit the screen perfectly.
+Managing university life is hard. Between lectures, assignments, group projects, and deadlines across multiple courses, students often feel overwhelmed and disorganized.
 
-​ Easy to Read (Accessibility): Since we use colors for urgency, we will also use clear text or icons so that students who have trouble seeing certain colors can still understand which tasks are most important.
+TaskPilot was built to solve that. It gives students a single, intuitive workspace to:
 
-### Testing Requirements
+- Stay on top of **every assignment and deadline** across all their courses
+- **Collaborate seamlessly** with classmates on group tasks
+- **Track their progress** and feel the satisfaction of getting things done
 
-​ Feature Check (Functional Testing) : We tested every single button (Create, Edit, Delete, Tag) to ensure they do exactly what they are supposed to do.
+---
 
-​ Device Check (Compatibility Testing) : We tested the app on different web browsers (like Chrome and Safari) to make sure it looks good.
-### Pending Requirements testing
+## ✨ Features
 
-​ Error Handling : We need to test what happens when something goes wrong. For example, if a student tries to save a task without a title, the app should show a helpful warning message instead of crashing.
+| Feature | Description |
+|---|---|
+| 📝 **Task Management** | Create, edit, prioritize, and organize tasks with ease |
+| 📅 **Calendar View** | Visualize upcoming deadlines in a clean weekly/monthly calendar |
+| ⏰ **Deadline Tracking** | Never miss a submission with smart due date tracking |
+| 🔔 **Reminders & Notifications** | Get notified before deadlines hit |
 
-​ User Acceptance : Before the final launch, a small group of students will try the app to confirm it actually helps them manage their time effectively.
+---
 
-​ Visual Polish : We will check that the colors (Red, Yellow, Blue, Green) appear correctly and are easy to see under different screen brightness levels.
+## 🛠️ Tech Stack
 
-### Integration Requirements
+### Frontend
+| Technology | Purpose |
+|---|---|
+| [Next.js](https://nextjs.org/) | React framework with App Router and Server Components |
+| [TypeScript](https://www.typescriptlang.org/) | Static typing for a more robust and maintainable codebase |
+| [Tailwind CSS](https://tailwindcss.com/) | Utility-first CSS for fast, consistent styling |
 
-​ Data Handshake (API Connection): The frontend must successfully send task information (like the task name and due date) to the backend database so it can be saved forever.
+### Backend & Database
+| Technology | Purpose |
+|---|---|
+| [Prisma ORM](https://www.prisma.io/) | Type-safe database access and schema migrations |
+| [PostgreSQL](https://www.postgresql.org/) | Relational database for persistent data storage |
 
-​ Real-time Updates : When a task is added on the backend, the frontend should show it immediately without the student having to refresh the page.
+---
 
-​ Secure Login : The frontend must safely pass the student’s login details to the security system to make sure only that student can see their private tasks.
+## 🚀 Getting Started
 
-​ Consistent Data: The colors and labels saved in the database must match exactly what is shown on the screen every time the student logs back in.
+### Prerequisites
 
-​ Loading Indicators: While the frontend is "talking" to the backend to save information, it should show a small "loading" spinner so the student knows the app is working.
+- [Node.js](https://nodejs.org/) — v18.17 or later
+- [PostgreSQL](https://www.postgresql.org/download/) — v14 or later
 
-### Technical Stack
-- [ ] Frontend: React.js / Tailwind CSS
-- [ ] State Management: Context API 
+### Installation
 
+1. **Clone the repository**
 
-### License
-   MIT License
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+```bash
+git clone https://github.com/Chinaza0507/task-manager-app.git
+cd task-manager-app
+```
 
-## Getting Started
+2. **Install dependencies**
 
-First, run the development server:
+```bash
+npm install
+```
+
+### Environment Variables
+
+Create a `.env` file in the root of the project and add the following:
+
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/taskpilot"
+NEXTAUTH_SECRET="your-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+### Database Setup
+
+```bash
+npx prisma generate
+npx prisma migrate dev --name init
+```
+
+### Running the App
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📁 Project Structure
 
-## Learn More
+```
+task-manager-app/
+├── app/                    # Next.js App Router
+├── backend/                # Backend logic and API
+├── components/             # Reusable UI components
+├── designs/                # Design files
+├── public/                 # Static assets
+├── .env.example            # Example environment variables
+├── .gitignore
+├── next.config.ts          # Next.js configuration
+├── postcss.config.mjs      # PostCSS configuration
+├── tailwind.config.ts      # Tailwind configuration
+├── tsconfig.json           # TypeScript configuration
+└── vercel.json             # Vercel deployment configuration
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 🔮 Future Improvements
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Mobile app support
+- AI-powered task prioritization
+- Real-time collaboration
+- Dark mode
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🙏 Acknowledgements
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+A big thank you to all the contributors who helped build TaskPilot:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [@Chinaza0507](https://github.com/Chinaza0507)
+- [@oghossgift](https://github.com/oghossgift)
+- [@tblgladiatorthekid](https://github.com/tblgladiatorthekid)
+- [@timsly5](https://github.com/timsly5)
+- [@FatihahA](https://github.com/FatihahA)
+- [@Amarvel17](https://github.com/Amarvel17)
+- [@of-gh](https://github.com/of-gh)
+
+---
+ 
+## 📄 License
+
+Distributed under the MIT License. See [`LICENSE`](./LICENSE) for more information.
+
+---
+
+<div align="center">
+
+Built with ❤️ for students, by students.
+
+</div>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Bell,
@@ -41,6 +41,7 @@ export default function DashboardShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [sidebarHovered, setSidebarHovered] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const helpWrapRef = useRef<HTMLDivElement | null>(null);
@@ -48,7 +49,7 @@ export default function DashboardShell({
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
   const excludedRoutes = [
-    "/dashboard/timer",
+    "/timer",
     "/dashboard/folders",
     "/settings",
   ];
@@ -79,17 +80,17 @@ export default function DashboardShell({
       },
       {
         label: "Task list",
-        href: "#",
+        href: "/tasklist",
         icon: <ListChecks size={18} strokeWidth={2} />,
       },
       {
         label: "Calendar",
-        href: "#",
+        href: "/calendar",
         icon: <Calendar size={18} strokeWidth={2} />,
       },
       {
         label: "Focus timer",
-        href: "#",
+        href: "/timer",
         icon: <Clock size={18} strokeWidth={2} />,
       },
       {
@@ -104,7 +105,10 @@ export default function DashboardShell({
   const sidebarWidth = sidebarHovered ? "w-[280px]" : "w-[88px]";
   const headerLeft = sidebarHovered ? "left-[280px]" : "left-[88px]";
   const contentLeft = sidebarHovered ? "ml-[280px]" : "ml-[88px]";
-
+  const handleLogout = () => {
+    setUserMenuOpen(false);
+    router.push("/login");
+  };  
   return (
     <div className="min-h-screen bg-[#EFE6FB]">
       {/* Fixed sidebar */}
@@ -217,9 +221,10 @@ export default function DashboardShell({
             </span>
           </Link>
 
-          <a
+          <button
+            type="button"
+            onClick={handleLogout}
             className="flex items-center gap-3 px-4 py-3 rounded-xl text-[#151C27] hover:bg-white/60"
-            href="#"
           >
             <span className="text-[#6B7280]">
               <Icon>
@@ -234,7 +239,7 @@ export default function DashboardShell({
             >
               Log out
             </span>
-          </a>
+          </button>
         </div>
       </aside>
 
@@ -353,16 +358,16 @@ export default function DashboardShell({
                       </span>
                       Settings
                     </Link>
-                    <a
+                    <button
+                      type = "button"
                       role="menuitem"
-                      href="#"
-                      className="flex items-center gap-2 rounded-lg px-3 py-2 hover:bg-[#F3F4F6]"
-                    >
+                      onClick={handleLogout}
+                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2 hover:bg-[#F3F4F6]">
                       <span className="text-[#6B7280]">
                         <LogOut size={16} strokeWidth={2} />
                       </span>
                       Log out
-                    </a>
+                    </button>
                   </div>
                 )}
               </div>

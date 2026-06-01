@@ -1,6 +1,7 @@
 datasource db {
   provider = "postgresql"
 }
+} 
 
 generator client {
   provider = "prisma-client-js"
@@ -43,6 +44,7 @@ model Task {
 
   task_list TaskList?  @relation(fields: [task_list_id], references: [id])
   task_tags TaskTag[]
+  files     TaskFile[]
 }
 
 model Tag {
@@ -55,6 +57,17 @@ model Tag {
   task_tags TaskTag[]
 
   @@unique([user_id, name]) // Unique tag name per user
+}
+
+model TaskFile {
+  id         Int      @id @default(autoincrement())
+  task_id    Int
+  filename   String
+  filepath   String
+  mimetype   String
+  created_at DateTime @default(now())
+
+  task Task @relation(fields: [task_id], references: [id], onDelete: Cascade)
 }
 
 model TaskTag {
