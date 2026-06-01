@@ -165,7 +165,7 @@ app.put('/tasks/:id', authenticateToken, async (req, res) => {
            reminder_at = COALESCE($7, reminder_at)
        WHERE id = $8 AND user_id = $9 
        RETURNING *`,
-      [is_completed, title, description, tag_name, tag_color, link_url, reminder_at, id, user_id]
+      [is_completed, title, description, tag_name, tag_color, link_url, reminder_at, id, userId]
     );
 
     if (updateTask.rows.length === 0) {
@@ -196,5 +196,9 @@ app.delete('/tasks/:id', async (req, res) => {
 
 
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+if (require.main === module) {
+  app.listen(3000, () => console.log('Server running on port 3000'));
+}
+
+module.exports = app;
 

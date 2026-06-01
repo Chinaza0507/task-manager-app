@@ -9,6 +9,10 @@
       "build": "next build",
       "start": "next start",
       "lint": "eslint"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +27,7 @@
     "next": "16.2.4",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-dom": "19.2.4"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
@@ -37,4 +42,7 @@
     "tailwindcss": "^4",
     "typescript": "^5"
       }
+  }
 }
+
+
