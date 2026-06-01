@@ -1,5 +1,9 @@
 import getTimeGreeting from "./_components/getTimeGreeting";
+<<<<<<< HEAD
+import StudyGroupActivePill from "./_components/StudyGroupActivePill";
+=======
 import StudyGroupActivePill from "@/components/StudyGroupActivePill";
+>>>>>>> 6e334ba246ab83a591f58daec68cfdca197e79e3
 import FocusSessionCard from "./_components/cards/FocusSessionCard";
 import PerformanceCard from "./_components/cards/PerformanceCard";
 
