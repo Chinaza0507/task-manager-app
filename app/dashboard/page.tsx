@@ -33,7 +33,7 @@ export default function DashboardPage() {
                 className="text-[#7C3AED] text-[14px] font-semibold hover:underline"
                 href="#"
               >
-                view all
+                View All
               </a>
             </div>
 

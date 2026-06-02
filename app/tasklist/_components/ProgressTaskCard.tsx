@@ -1,3 +1,5 @@
+import { Check, Trash2 } from "lucide-react";
+
 type ProgressTaskCardProps = {
   category: string;
   priority: string;
@@ -9,6 +11,7 @@ type ProgressTaskCardProps = {
   priorityClassName: string;
   checked?: boolean;
   onToggle?: () => void;
+  onDelete?: () => void;
 };
 
 export default function ProgressTaskCard({
@@ -22,6 +25,7 @@ export default function ProgressTaskCard({
   priorityClassName,
   checked = false,
   onToggle,
+  onDelete,
 }: ProgressTaskCardProps) {
   return (
     <div className="bg-[#EEE7FA] border border-[#DDD5EE] rounded-2xl shadow-sm px-6 py-5">
@@ -38,14 +42,10 @@ export default function ProgressTaskCard({
         </button>
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <span
-              className={`text-[12px] font-semibold px-3 py-1 rounded-full ${categoryClassName}`}
-            >
+            <span className={`text-[12px] font-semibold px-3 py-1 rounded-full ${categoryClassName}`}>
               {category}
             </span>
-            <span
-              className={`text-[12px] font-semibold px-3 py-1 rounded-full ${priorityClassName}`}
-            >
+            <span className={`text-[12px] font-semibold px-3 py-1 rounded-full ${priorityClassName}`}>
               {priority}
             </span>
             <span className="ml-auto text-[12px] font-semibold text-[#6B7280]">
@@ -53,25 +53,31 @@ export default function ProgressTaskCard({
             </span>
           </div>
 
-          <h3 className="mt-4 text-[#151C27] font-semibold text-[16px]">
-            {title}
-          </h3>
+          <h3 className="mt-4 text-[#151C27] font-semibold text-[16px]">{title}</h3>
 
           <div className="mt-4">
             <div className="w-full h-3 bg-[#D8D0E3] rounded-full overflow-hidden">
               <div
                 className="h-full bg-[#A78BFA] rounded-full"
-                style={{
-                  width: `${Math.min(Math.max(progressValue, 0), 100)}%`,
-                }}
+                style={{ width: `${Math.min(Math.max(progressValue, 0), 100)}%` }}
               />
             </div>
             <div className="flex items-center justify-between mt-3 text-[12px] text-[#6B7280]">
               <span>{progressLabel}</span>
-              <span className="text-[#111827] font-semibold">
-                {progressValue}%
-              </span>
+              <span className="text-[#111827] font-semibold">{progressValue}%</span>
             </div>
+          </div>
+
+          <div className="mt-4 flex justify-end">
+            <button
+              type="button"
+              aria-label="Delete task"
+              onClick={onDelete}
+              className="inline-flex items-center gap-1 text-[#6B7280] hover:text-[#DC2626] transition-colors"
+            >
+              <Trash2 size={14} />
+              <span className="text-[13px]">Delete</span>
+            </button>
           </div>
         </div>
       </div>
