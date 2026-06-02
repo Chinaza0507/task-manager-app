@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { createTask } from "@/lib/tasks-api";
 
 type StoredTask = {
   id: string;
@@ -60,10 +61,7 @@ export default function AddTaskPage() {
         completed: false,
       };
 
-      await createTask({
-        title: title.trim(),
-        description: mergedDescription,
-      });
+      await createTask(newTask);
 
       alert("Task created successfully!");
       router.push("/tasklist");
