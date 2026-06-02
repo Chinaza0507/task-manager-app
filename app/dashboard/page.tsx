@@ -115,54 +115,112 @@ export default function DashboardPage() {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M12 3a6 6 0 0 0-6 6v3.586L4.707 14A1 1 0 0 0 5.414 15h13.172a1 1 0 0 0 .707-1.707L18 12.586V9a6 6 0 0 0-6-6Z"
+                  d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7Z"
                   stroke="currentColor"
-                  strokeWidth="1.8"
+                  strokeWidth="2"
+                  strokeLinejoin="round"
                 />
                 <path
-                  d="M10 18a2 2 0 0 0 4 0"
+                  d="M10 19a2 2 0 0 0 4 0"
                   stroke="currentColor"
-                  strokeWidth="1.8"
+                  strokeWidth="2"
                   strokeLinecap="round"
                 />
               </svg>
             </button>
           </div>
-
-          <div className="px-6 pb-6 space-y-3">
-            {[
-              {
-                title: "History Essay",
-                when: "Due tomorrow",
-              },
-              {
-                title: "Math Quiz Prep",
-                when: "Due in 2 days",
-              },
-              {
-                title: "Physics Lab",
-                when: "Due Friday",
-              },
-            ].map((d) => (
-              <div
-                key={d.title}
-                className="rounded-xl border border-[#E7E1F2] bg-white px-4 py-3"
-              >
-                <div className="font-semibold text-[#151C27]">{d.title}</div>
-                <div className="text-[13px] text-[#6B7280] mt-1">{d.when}</div>
+          <div className="px-6 pb-6 space-y-4">
+            <div className="bg-white border border-[#E7E1F2] rounded-2xl p-4 flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-[#FCA5A5] text-[#7F1D1D] flex flex-col items-center justify-center font-bold">
+                <div className="text-[12px]">OCT</div>
+                <div className="text-[18px] leading-none">12</div>
               </div>
-            ))}
+              <div>
+                <div className="text-[#151C27] font-semibold">
+                  Final year project
+                </div>
+                <div className="text-[#6B7280] text-[13px]">
+                  2 days remaining
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white border border-[#E7E1F2] rounded-2xl p-4 flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-[#D8B4FE] text-[#3B0764] flex flex-col items-center justify-center font-bold">
+                <div className="text-[12px]">OCT</div>
+                <div className="text-[18px] leading-none">15</div>
+              </div>
+              <div>
+                <div className="text-[#151C27] font-semibold">
+                  Lab Report: Plant Cells
+                </div>
+                <div className="text-[#6B7280] text-[13px]">
+                  5 days remaining
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <PerformanceCard />
+        {/* Courses */}
+        <div className="bg-[#EEE7FA] border border-[#DDD5EE] rounded-2xl shadow-sm">
+          <div className="flex items-center justify-between px-6 py-5">
+            <h2 className="text-[#151C27] font-bold text-[18px]">Courses</h2>
+            <button
+              aria-label="Go"
+              className="text-[#6B7280] hover:text-[#111827] text-[20px]"
+            >
+              →
+            </button>
+          </div>
+          <div className="px-6 pb-6 grid grid-cols-1 gap-4">
+            <div className="bg-white border border-[#E7E1F2] rounded-2xl p-4 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-[#EAD9FF] flex items-center justify-center text-[#7C3AED]">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M4 5h16v10H7l-3 3V5Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+              <div>
+                <div className="text-[#151C27] font-semibold">
+                  Psychology 101
+                </div>
+                <div className="text-[#6B7280] text-[13px]">
+                  Room 402~ 10:00 AM
+                </div>
+              </div>
+            </div>
 
-        <div className="bg-[#EEE7FA] border border-[#DDD5EE] rounded-2xl shadow-sm p-6">
-          <h2 className="text-[#151C27] font-bold text-[18px]">Quick Notes</h2>
-          <p className="mt-3 text-[#6B7280] text-[14px]">
-            Keep short reminders here while you work.
-          </p>
+            <div className="bg-white border border-[#E7E1F2] rounded-2xl p-4 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-[#BBF7D0] flex items-center justify-center text-[#166534] font-bold">
+                Σ
+              </div>
+              <div>
+                <div className="text-[#151C27] font-semibold">Calculus II</div>
+                <div className="text-[#6B7280] text-[13px]">
+                  Online~ 1:30 PM
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Performance */}
+        <PerformanceCard />
+      </div>
+
+      <div className="mt-10 pb-10 text-center text-[#6B7280] text-[12px]">
+        © 2026 TaskPilot. Designed for quiet and academic excellence
       </div>
     </section>
   );

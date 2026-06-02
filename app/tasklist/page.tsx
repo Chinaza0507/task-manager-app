@@ -191,7 +191,19 @@ export default function TaskListPage() {
   const openTasks = filteredTasks.filter((t) => !t.completed);
   const completedTasks = filteredTasks.filter((t) => t.completed);
 
-  const toggleTask = async (id: string) => {
+  const persistTaskCompletion = (id: string, completed: boolean) => {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    if (!stored) return;
+
+    const parsed: StoredTask[] = JSON.parse(stored);
+    const updated = parsed.map((task) =>
+      task.id === id ? { ...task, completed } : task,
+    );
+
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  };
+
+  const toggleTask = (id: string) => {
     const current = tasks.find((task) => task.id === id);
     if (!current) return;
 
@@ -209,23 +221,7 @@ export default function TaskListPage() {
       ),
     );
 
-    try {
-      await updateTaskCompletion(Number(id), nextCompleted);
-    } catch (error: unknown) {
-      setTasks((prev) =>
-        prev.map((task) =>
-          task.id === id
-            ? {
-                ...task,
-                completed: current.completed,
-                dueLabel: current.completed ? "Completed" : "No due date",
-              }
-            : task,
-        ),
-      );
-
-      setErrorMessage(getErrorMessage(error, "Could not update task status."));
-    }
+    persistTaskCompletion(id, nextCompleted);
   };
 
   const deleteTask = (id: string) => {
