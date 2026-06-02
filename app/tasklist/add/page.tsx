@@ -3,18 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
-type StoredTask = {
-  id: string;
-  title: string;
-  description?: string;
-  category: "Mathematics" | "History" | "Physics";
-  priority: "High" | "Medium" | "Low";
-  dueDate: string;
-  completed?: boolean;
-};
-
-const STORAGE_KEY = "taskpilot.tasks";
+import { createTask } from "@/lib/taskApi";
 
 export default function AddTaskPage() {
   const router = useRouter();
@@ -44,28 +33,31 @@ export default function AddTaskPage() {
     setIsSubmitting(true);
 
     try {
-      const stored = window.localStorage.getItem(STORAGE_KEY);
-      const existing: StoredTask[] = stored ? JSON.parse(stored) : [];
+      const extraMeta = [
+        `Category: ${category}`,
+        `Priority: ${priority}`,
+        `Due date: ${dueDate}`,
+      ].join(" | ");
 
-      const newTask: StoredTask = {
-        id: `task-${Date.now()}`,
+      const mergedDescription = [description.trim(), `[Task Meta] ${extraMeta}`]
+        .filter(Boolean)
+        .join("\n\n");
+
+      await createTask({
         title: title.trim(),
-        description: description.trim(),
-        category: category as StoredTask["category"],
-        priority: priority as StoredTask["priority"],
-        dueDate,
-        completed: false,
-      };
-
-      const updated = [newTask, ...existing];
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+        description: mergedDescription,
+      });
 
       alert("Task created successfully!");
       router.push("/tasklist");
       router.refresh();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Submission Failure:", error);
-      setErrorMessage(error.message || "Something went wrong while saving.");
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : "Something went wrong while saving.";
+      setErrorMessage(message);
     } finally {
       setIsSubmitting(false);
     }

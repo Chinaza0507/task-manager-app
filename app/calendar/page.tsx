@@ -1,44 +1,34 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CalendarGrid from "./_component/CalendarGrid";
 import TaskBriefing from "./_component/TaskBriefing";
 
-type CategoryKey = "study" | "lecture" | "deadline" | "meeting";
-
-type CalendarEvent = {
+type StoredTask = {
   id: string;
-  date: string;
-  time: string;
   title: string;
-  location: string;
-  category: CategoryKey;
+  description?: string;
+  category: string;
+  priority: "High" | "Medium" | "Low";
+  dueDate: string;
+  completed?: boolean;
 };
 
-const CATEGORY_STYLES: Record<
-  CategoryKey,
-  { accent: string; marker: string; label: string }
-> = {
-  study: {
-    label: "Study session",
-    accent: "border-[#15803D] bg-[#F1FAEA]",
-    marker: "bg-[#22C55E]",
-  },
-  lecture: {
-    label: "Lecture",
-    accent: "border-[#7E22CE] bg-[#F4D9F5]",
-    marker: "bg-[#A855F7]",
-  },
-  deadline: {
-    label: "Deadline",
-    accent: "border-[#EF4444] bg-[#F0C8CF]",
-    marker: "bg-[#EF4444]",
-  },
-  meeting: {
-    label: "Meeting",
-    accent: "border-[#15803D] bg-[#F1FAEA]",
-    marker: "bg-[#16A34A]",
-  },
+const STORAGE_KEY = "taskpilot.tasks";
+
+const TASK_ACCENT = "border-[#7C3AED] bg-[#EDE9FE]";
+const TASK_MARKER = "bg-[#7C3AED]";
+
+const PRIORITY_ACCENTS: Record<StoredTask["priority"], string> = {
+  High: "border-[#EF4444] bg-[#F0C8CF]",
+  Medium: "border-[#F97316] bg-[#FEF3C7]",
+  Low: "border-[#15803D] bg-[#F1FAEA]",
+};
+
+const PRIORITY_MARKERS: Record<StoredTask["priority"], string> = {
+  High: "bg-[#EF4444]",
+  Medium: "bg-[#F97316]",
+  Low: "bg-[#22C55E]",
 };
 
 function toIsoDate(date: Date) {
@@ -53,10 +43,7 @@ function formatHeading(date: Date) {
 }
 
 function formatChip(date: Date) {
-  return date.toLocaleString("en-US", {
-    month: "short",
-    day: "2-digit",
-  });
+  return date.toLocaleString("en-US", { month: "short", day: "2-digit" });
 }
 
 export default function CalendarPage() {
@@ -65,58 +52,34 @@ export default function CalendarPage() {
     new Date(today.getFullYear(), today.getMonth(), 1),
   );
   const [selectedDate, setSelectedDate] = useState(today);
+  const [storedTasks, setStoredTasks] = useState<StoredTask[]>([]);
 
-  const [events, setEvents] = useState<CalendarEvent[]>(() => {
-    const date = toIsoDate(today);
-    return [
-      {
-        id: "seed-1",
-        date,
-        time: "15:00 – 16:30",
-        title: "Study Session: Mathematical methods II",
-        location: "Library",
-        category: "study",
-      },
-      {
-        id: "seed-2",
-        date,
-        time: "12:30 – 14:30",
-        title: "Computer security fundamentals lecture",
-        location: "Room 2",
-        category: "lecture",
-      },
-      {
-        id: "seed-3",
-        date,
-        time: "11:00 DEADLINE!",
-        title: "Linear algebra assignment",
-        location: "Submission via student portal",
-        category: "deadline",
-      },
-      {
-        id: "seed-4",
-        date,
-        time: "17:00 – 18:00",
-        title: "CSC 202 Group meeting",
-        location: "Engineering and Drawing Studio",
-        category: "meeting",
-      },
-    ];
-  });
+  useEffect(() => {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const parsed: StoredTask[] = JSON.parse(raw);
+    setStoredTasks(parsed);
+  }, []);
 
   const selectedIso = toIsoDate(selectedDate);
-  const selectedTasks = events
-    .filter((event) => event.date === selectedIso)
-    .map((event) => ({
-      ...event,
-      accent: CATEGORY_STYLES[event.category].accent,
+
+  const selectedTasks = storedTasks
+    .filter((t) => t.dueDate === selectedIso && !t.completed)
+    .map((t) => ({
+      id: t.id,
+      time: `Due — ${t.priority} priority`,
+      title: t.title,
+      location: t.category,
+      accent: PRIORITY_ACCENTS[t.priority] ?? TASK_ACCENT,
     }));
 
-  const calendarMarkers = events.map((event) => ({
-    id: event.id,
-    date: event.date,
-    marker: CATEGORY_STYLES[event.category].marker,
-  }));
+  const calendarMarkers = storedTasks
+    .filter((t) => !t.completed)
+    .map((t) => ({
+      id: t.id,
+      date: t.dueDate,
+      marker: PRIORITY_MARKERS[t.priority] ?? TASK_MARKER,
+    }));
 
   function handleSelectDate(date: Date) {
     setSelectedDate(date);

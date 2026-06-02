@@ -1,6 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  listTasks,
+  updateTaskCompletion,
+  type BackendTask,
+} from "@/lib/taskApi";
 import StudyGroupActivePill from "@/components/StudyGroupActivePill";
 import FilterChip from "./_components/FilterChip";
 import TaskListCard from "./_components/TaskListCard";
@@ -23,6 +28,27 @@ type Task = {
   progressValue?: number;
   completed?: boolean;
 };
+
+function mapBackendTask(task: BackendTask): Task {
+  return {
+    id: String(task.id),
+    title: task.title,
+    description: task.description ?? "",
+    category: "Mathematics",
+    priority: "Medium",
+    dueLabel: task.is_completed ? "Completed" : "No due date",
+    dueSoon: false,
+    completed: task.is_completed,
+  };
+}
+
+function getErrorMessage(error: unknown, fallback: string) {
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+
+  return fallback;
+}
 
 type FilterKey =
   | "All Tasks"
@@ -51,41 +77,40 @@ const PRIORITY_STYLES: Record<Task["priority"], string> = {
   Low: "text-[#2563EB]",
 };
 
-const INITIAL_TASKS: Task[] = [
-  {
-    id: "history-essay",
-    title: "Renaissance Art Essay Final Draft",
-    description:
-      "Complete the bibliography and finalize the introduction section with new citations.",
-    category: "History",
-    priority: "High",
-    dueLabel: "Due Today",
-    dueSoon: true,
-    files: 2,
-    comments: 3,
-  },
-  {
-    id: "calc-integration",
-    title: "Problem Set: Integration by Parts",
-    category: "Mathematics",
-    priority: "Medium",
-    dueLabel: "Due Oct 24",
-    progressLabel: "12 of 18 problems finished",
-    progressValue: 65,
-  },
-  {
-    id: "physics-lab",
-    title: "Lab Report: Thermodynamics",
-    category: "Physics",
-    priority: "Low",
-    dueLabel: "Completed Yesterday",
-    completed: true,
-  },
-];
-
 export default function TaskListPage() {
   const [activeFilter, setActiveFilter] = useState<FilterKey>("All Tasks");
-  const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadTasks = async () => {
+      try {
+        setIsLoading(true);
+        setErrorMessage(null);
+        const backendTasks = await listTasks();
+        if (!isMounted) return;
+        setTasks(backendTasks.map(mapBackendTask));
+      } catch (error: unknown) {
+        if (!isMounted) return;
+        setErrorMessage(
+          getErrorMessage(error, "Could not load tasks from backend."),
+        );
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadTasks();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const filteredTasks = useMemo(() => {
     switch (activeFilter) {
@@ -105,12 +130,41 @@ export default function TaskListPage() {
   const openTasks = filteredTasks.filter((task) => !task.completed);
   const completedTasks = filteredTasks.filter((task) => task.completed);
 
-  const toggleTask = (id: string) => {
+  const toggleTask = async (id: string) => {
+    const current = tasks.find((task) => task.id === id);
+    if (!current) return;
+
+    const nextCompleted = !current.completed;
+
     setTasks((prev) =>
       prev.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task,
+        task.id === id
+          ? {
+              ...task,
+              completed: nextCompleted,
+              dueLabel: nextCompleted ? "Completed" : "No due date",
+            }
+          : task,
       ),
     );
+
+    try {
+      await updateTaskCompletion(Number(id), nextCompleted);
+    } catch (error: unknown) {
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === id
+            ? {
+                ...task,
+                completed: current.completed,
+                dueLabel: current.completed ? "Completed" : "No due date",
+              }
+            : task,
+        ),
+      );
+
+      setErrorMessage(getErrorMessage(error, "Could not update task status."));
+    }
   };
 
   return (
@@ -132,6 +186,12 @@ export default function TaskListPage() {
           <StudyGroupActivePill extraCount={3} />
         </div>
       </div>
+
+      {errorMessage && (
+        <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {errorMessage}
+        </div>
+      )}
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#E7E1F2] shadow-sm text-[13px] font-semibold text-[#151C27]">
@@ -176,53 +236,65 @@ export default function TaskListPage() {
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_380px] gap-8">
         <div className="space-y-6">
-          {openTasks.map((task) =>
-            task.progressValue !== undefined ? (
-              <ProgressTaskCard
-                key={task.id}
-                checked={false}
-                onToggle={() => toggleTask(task.id)}
-                category={task.category}
-                priority={task.priority}
-                dueLabel={task.dueLabel}
-                title={task.title}
-                progressLabel={task.progressLabel ?? ""}
-                progressValue={task.progressValue}
-                categoryClassName={CATEGORY_STYLES[task.category]}
-                priorityClassName={PRIORITY_STYLES[task.priority]}
-              />
-            ) : (
-              <TaskListCard
-                key={task.id}
-                checked={false}
-                onToggle={() => toggleTask(task.id)}
-                category={task.category}
-                priority={task.priority}
-                dueLabel={task.dueLabel}
-                title={task.title}
-                description={task.description ?? ""}
-                files={task.files ?? 0}
-                comments={task.comments ?? 0}
-                categoryClassName={CATEGORY_STYLES[task.category]}
-                priorityClassName={PRIORITY_STYLES[task.priority]}
-                dueClassName={
-                  task.dueSoon ? "text-[#DC2626]" : "text-[#6B7280]"
-                }
-              />
-            ),
-          )}
+          {isLoading ? (
+            <div className="rounded-2xl border border-[#E7E1F2] bg-white p-6 text-sm text-[#6B7280]">
+              Loading tasks...
+            </div>
+          ) : openTasks.length === 0 && completedTasks.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-[#D8CFE9] bg-white p-8 text-center text-sm text-[#6B7280]">
+              No tasks from backend yet.
+            </div>
+          ) : (
+            <>
+              {openTasks.map((task) =>
+                task.progressValue !== undefined ? (
+                  <ProgressTaskCard
+                    key={task.id}
+                    checked={false}
+                    onToggle={() => toggleTask(task.id)}
+                    category={task.category}
+                    priority={task.priority}
+                    dueLabel={task.dueLabel}
+                    title={task.title}
+                    progressLabel={task.progressLabel ?? ""}
+                    progressValue={task.progressValue}
+                    categoryClassName={CATEGORY_STYLES[task.category]}
+                    priorityClassName={PRIORITY_STYLES[task.priority]}
+                  />
+                ) : (
+                  <TaskListCard
+                    key={task.id}
+                    checked={false}
+                    onToggle={() => toggleTask(task.id)}
+                    category={task.category}
+                    priority={task.priority}
+                    dueLabel={task.dueLabel}
+                    title={task.title}
+                    description={task.description ?? ""}
+                    files={task.files ?? 0}
+                    comments={task.comments ?? 0}
+                    categoryClassName={CATEGORY_STYLES[task.category]}
+                    priorityClassName={PRIORITY_STYLES[task.priority]}
+                    dueClassName={
+                      task.dueSoon ? "text-[#DC2626]" : "text-[#6B7280]"
+                    }
+                  />
+                ),
+              )}
 
-          {completedTasks.map((task) => (
-            <CompletedTaskCard
-              key={task.id}
-              checked
-              onToggle={() => toggleTask(task.id)}
-              category={task.category}
-              priority={task.priority}
-              status={task.dueLabel}
-              title={task.title}
-            />
-          ))}
+              {completedTasks.map((task) => (
+                <CompletedTaskCard
+                  key={task.id}
+                  checked
+                  onToggle={() => toggleTask(task.id)}
+                  category={task.category}
+                  priority={task.priority}
+                  status={task.dueLabel}
+                  title={task.title}
+                />
+              ))}
+            </>
+          )}
         </div>
 
         <div className="space-y-6">
