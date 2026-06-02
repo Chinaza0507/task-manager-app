@@ -6,8 +6,6 @@ export default function Home() {
       {/*Navigation Bar Section*/}
       <div className="flex justify-start items-center px-8 py-3 bg-white gap-4">
         <div className="flex items-center gap-2">
-          {" "}
-          {/* Grouped logo and text */}
           <img src="taskp_logo.svg" alt="TaskPilot Icon" className="w-9 h-9" />
           <div
             className="text-[#9333EA] text-[24px] font-bold"
@@ -16,7 +14,7 @@ export default function Home() {
             TaskPilot
           </div>
         </div>
-        <div className="flex gap-8 text-[#6B7280] font-normal ">
+        <div className="flex gap-8 text-[#6B7280] font-normal">
           <Link
             href="/dashboard"
             className="hover:text-[#7C3AED] cursor-pointer"
@@ -30,7 +28,7 @@ export default function Home() {
       </div>
 
       {/*The body of the landing page */}
-      <div className="px-8 pt-16 pb-10">
+      <div className="px-8 pt-16 pb-10 flex flex-col items-center text-center">
         <p className="text-[#696174] font-normal">Your academic zen space</p>
 
         <h1
@@ -50,7 +48,8 @@ export default function Home() {
           peace of mind.
         </p>
       </div>
-      <div className="flex gap-8 p-10 pb-0 mb-6">
+
+      <div className="flex gap-8 p-10 pb-0 mb-6 justify-center">
         <Link
           href="/signup"
           className="inline-flex items-center justify-center bg-[#7C3AED] text-white font-bold py-8 px-16 rounded-lg hover:opacity-90 transition-opacity"
@@ -61,7 +60,8 @@ export default function Home() {
           See How It Works
         </button>
       </div>
-      <div className="flex px-10 mt-2 mb-16">
+
+      <div className="flex px-10 mt-2 mb-16 justify-center">
         <p className="text-[#696174] text-normal">
           Already have an account?{" "}
           <Link
@@ -79,18 +79,16 @@ export default function Home() {
           <h2 className="text-[#151C27] text-[24px] font-normal">
             Everything you need to excel
           </h2>
-          <p className="text-[#635B6E] text-[16px] font-normal ">
+          <p className="text-[#635B6E] text-[16px] font-normal">
             A workspace that feels like a clean desk in morning light.
           </p>
         </div>
 
         {/* THE CARD SECTION */}
         <div className="flex flex-wrap justify-center gap-y-8 gap-x-54">
-          {" "}
-          {/* CARD SPACING*/}
           {/* FOCUS CARD*/}
           <div className="bg-[#F3EAFA] p-10 rounded-xl border border-[#CCC3D8] shadow-sm max-w-[400px]">
-            <div className="w-12 h-12 bg-[#EADDFF] rounded-xl flex items-center justify-center mb-2 ">
+            <div className="w-12 h-12 bg-[#EADDFF] rounded-xl flex items-center justify-center mb-2">
               <svg
                 className="w-6 h-6 text-[#7C3AED]"
                 fill="none"
@@ -108,17 +106,16 @@ export default function Home() {
             <h3 className="text-[#151C27] font-normal text-[20px] mb-2">
               Focus Timer
             </h3>
-            <p className="text-[#151C27] font-normal text-[16px]  ">
-              Enter deep work sessions with our integrated Pomodoro- style
-              timer. Ambient sounds and distraction-free modes help you stay in
-              the flow.
+            <p className="text-[#151C27] font-normal text-[16px]">
+              Enter deep work sessions with our integrated Pomodoro-style timer.
+              Ambient sounds and distraction-free modes help you stay in the
+              flow.
             </p>
           </div>
-          {/* END OF CODE FOR FOCUS CARD */}
-          {/*PERFOMANCE CARD */}
+
+          {/*PERFORMANCE CARD */}
           <div className="bg-[#F3EAFA] p-10 rounded-xl border border-[#CCC3D8] shadow-sm max-w-[400px]">
-            <div className="w-12 h-12 bg-[#76f4b6] rounded-xl flex flex-col items-center justify-center mb-2 ">
-              {/* Graph Icon SVG */}
+            <div className="w-12 h-12 bg-[#76f4b6] rounded-xl flex flex-col items-center justify-center mb-2">
               <svg
                 className="w-6 h-6 text-[#151C27]"
                 fill="none"
@@ -143,8 +140,8 @@ export default function Home() {
 
             {/* PROGRESS BAR SECTION */}
             <div className="w-full">
-              <div className="w-full h-2 bg-[#E9DEF5] rounded-full overflow-hidden ">
-                <div className="bg-[#7C3AED] h-full w-[75%] rounded-full "></div>
+              <div className="w-full h-2 bg-[#E9DEF5] rounded-full overflow-hidden">
+                <div className="bg-[#7C3AED] h-full w-[75%] rounded-full"></div>
               </div>
               <div className="flex justify-between text-[12px] text-[#6B7280] font-normal mt-3">
                 <span>Weekly Goal</span>
@@ -152,11 +149,10 @@ export default function Home() {
               </div>
             </div>
           </div>
-          {/* END OF CODE FOR PERFOMANCE CARD */}
+
           {/* TASK MANAGEMENT CARD */}
           <div className="bg-[#F3EAFA] p-10 rounded-xl border border-[#CCC3D8] shadow-sm max-w-[400px]">
             <div className="w-12 h-12 bg-[#EADDFF] rounded-xl flex items-center justify-center mb-2">
-              {/* Clipboard/List Icon */}
               <svg
                 className="w-6 h-6 text-[#7C3AED]"
                 fill="none"
@@ -175,8 +171,8 @@ export default function Home() {
               Task Management
             </h3>
             <p className="text-[#6B7280] text-[16px] mb-2">
-              Intelligent sorting that prioritizes what matters most.Organize by
-              course, due date, or energy level.
+              Intelligent sorting that prioritizes what matters most. Organize
+              by course, due date, or energy level.
             </p>
 
             {/* The Checklist Items */}
@@ -207,11 +203,10 @@ export default function Home() {
               </div>
             </div>
           </div>
-          {/* END OF CODE FOR TASK MANAGEMENT CARD */}
+
           {/* RESOURCE HUB CARD */}
           <div className="bg-[#F3EAFA] p-10 rounded-xl border border-[#CCC3D8] shadow-sm max-w-[400px]">
             <div className="w-12 h-12 bg-[#EADDFF] rounded-xl flex items-center justify-center mb-2">
-              {/* Folder Icon */}
               <svg
                 className="w-6 h-6 text-[#7C3AED]"
                 fill="none"
@@ -234,18 +229,17 @@ export default function Home() {
               tasks. Everything in one place.
             </p>
           </div>
-          {/*END OF CODE FOR RESOURCE HUB */}
         </div>
 
         {/* BOTTOM SECTION */}
-        <div className="bg-[#EEDFFB] px-8 py-20 ">
+        <div className="bg-[#EEDFFB] px-8 py-20">
           {/* TESTIMONIALS SECTION */}
           <div className="bg-[#7C3AED] rounded-[24px] p-16 text-center max-w-[1216px] mx-auto mb-20">
             <h2 className="text-white text-[24px] font-bold mb-10">
               Student Love
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Sarah */}
+              {/* Timi */}
               <div className="bg-white/10 border border-white/20 backdrop-blur text-left p-8 rounded-3xl">
                 <p className="text-[#EDE0FF] text-[16px] italic mb-6">
                   &ldquo;TaskPilot changed how I approach my finals. The
@@ -261,7 +255,7 @@ export default function Home() {
                   </p>
                 </div>
               </div>
-              {/* David */}
+              {/* Valerie */}
               <div className="bg-white/10 border border-white/20 backdrop-blur text-left p-8 rounded-3xl">
                 <p className="text-[#EDE0FF] text-[16px] italic mb-6">
                   &ldquo;The focus timer is the only thing that keeps me off my
@@ -273,7 +267,7 @@ export default function Home() {
                 </p>
                 <p className="text-[#EDE0FF]/70 text-[13px]">Law Student</p>
               </div>
-              {/* Elizabeth */}
+              {/* Peace */}
               <div className="bg-white/10 border border-white/20 backdrop-blur text-left p-8 rounded-3xl">
                 <p className="text-[#EDE0FF] text-[16px] italic mb-6">
                   &ldquo;Finally a task manager that doesn&#39;t feel like a

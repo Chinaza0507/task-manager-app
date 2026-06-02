@@ -1,50 +1,12 @@
-<<<<<<< HEAD
-import React from 'react';
-import {Mail, Lock, ArrowRight} from 'lucide-react';
-
-export default function LoginPage() {
-  return (
-    <main className='min-h-screen flex items-center justify-center bg-[#F3EAFA] px-[24px] py-[48px]'>
-        <div className='flex w-full max-w-[1100px] min-h-[776px] rounded-[40px] overflow-hidden shadow-2xl'>
-            <div className='hidden md:block w-[45%]  bg-[#885AA8]'> {/* FOR THE LEFT SIDE */}
-            </div>
-
-            <div className='w-full md:w-[55%] p-20 flex flex-col flex-start justify-center bg-white '>
-                <div className='max-w-md w-full mx-auto'>
-                    <h1 className='text-[30px] font-normal text-black gap-2'>Welcome back</h1>
-                    <p className='text-[16px] font-normal text-[#5A5A5A] mb-10'>Enter your details to access your workspace.</p>
-                    <div className=''>
-
-                    </div>
-
-
-
-
-
-                </div>
-
-
-            </div>
-
-        </div>
-
-    </main>
-
-);
-}
-=======
 "use client";
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function LoginPage() {
-  // Toggles password visibility in the password input.
   const [showPassword, setShowPassword] = useState(false);
 
-  // Hero image shown on the left side of the login page.
-  // Note: assets inside `public/` are referenced from the site root ("/...").
   const heroImage = useMemo(
     () => ({
       src: "/today's focs.png",
@@ -55,16 +17,8 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen bg-[#EEDFFB] px-6 py-12 flex items-center justify-center">
-      {/*
-        Login page layout:
-        - Left column: branding + marketing copy + static hero image.
-        - Right column: login form card.
-      */}
-      {/* Centered container */}
-      <div className="w-full max-w-[1120px] grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-        {/* LEFT: brand + value prop + hero image */}
+      <div className="w-full max-w-280 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         <section className="px-2 lg:px-0">
-          {/* Brand */}
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-white border border-[#DDD5EE] flex items-center justify-center shadow-sm overflow-hidden">
               <Image
@@ -85,25 +39,14 @@ export default function LoginPage() {
             <span className="text-[#7C3AED]">right where you left off</span>.
           </h1>
 
-          <p className="mt-6 text-[18px] leading-relaxed text-[#6B7280] max-w-[520px]">
+          <p className="mt-6 text-[18px] leading-relaxed text-[#6B7280] max-w-130">
             Your tasks, focus blocks, and progress are waiting on your
             dashboard.
           </p>
 
-          {/* Scroll-effect image strip (rotates as you scroll) */}
-          {/* Hero image container */}
-          <div className="mt-10 w-full max-w-[460px]">
-            {/*
-              Subtle outline (ring) helps the white image container stand out
-              against the light purple page background.
-            */}
+          <div className="mt-10 w-full max-w-115">
             <div className="rounded-[28px] overflow-hidden bg-white ring-[0.5px] ring-[#DDD5EE]">
-              {/* Keep a consistent image frame regardless of image dimensions */}
-              <div className="relative w-full aspect-[4/3] bg-white">
-                {/*
-                  `object-cover` fills the frame. `object-top` biases cropping toward
-                  the bottom (so top headings in screenshots are more likely to remain visible).
-                */}
+              <div className="relative w-full aspect-4/3 bg-white">
                 <Image
                   src={heroImage.src}
                   alt={heroImage.alt}
@@ -117,9 +60,8 @@ export default function LoginPage() {
           </div>
         </section>
 
-        {/* RIGHT: login card */}
         <section className="w-full flex lg:justify-center lg:items-start">
-          <div className="w-full max-w-[420px] lg:mt-3 rounded-[24px] bg-[#F7F0FF] shadow-[0_40px_120px_rgba(124,58,237,0.32)] ring-1 ring-[#E7E1F2] p-7 sm:p-8">
+          <div className="w-full max-w-105 lg:mt-3 rounded-3xl bg-[#F7F0FF] shadow-[0_40px_120px_rgba(124,58,237,0.32)] ring-1 ring-[#E7E1F2] p-7 sm:p-8">
             <div className="flex items-center justify-center gap-2">
               <Image
                 src="/taskp_logo.svg"
@@ -141,7 +83,6 @@ export default function LoginPage() {
               className="mt-8 space-y-6"
               onSubmit={(e) => {
                 e.preventDefault();
-                // UI-only for now (no auth wired yet): send the user to the dashboard.
                 window.location.href = "/dashboard";
               }}
             >
@@ -151,7 +92,6 @@ export default function LoginPage() {
                 </label>
                 <div className="mt-2 relative">
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9CA3AF]">
-                    {/* mail icon */}
                     <svg
                       width="20"
                       height="20"
@@ -200,7 +140,6 @@ export default function LoginPage() {
 
                 <div className="mt-2 relative">
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9CA3AF]">
-                    {/* lock icon */}
                     <svg
                       width="20"
                       height="20"
@@ -232,7 +171,6 @@ export default function LoginPage() {
                     autoComplete="current-password"
                   />
 
-                  {/* Toggle password visibility */}
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
@@ -241,7 +179,6 @@ export default function LoginPage() {
                       showPassword ? "Hide password" : "Show password"
                     }
                   >
-                    {/* eye icon */}
                     <svg
                       width="22"
                       height="22"
@@ -308,4 +245,3 @@ export default function LoginPage() {
     </main>
   );
 }
->>>>>>> 6e334ba246ab83a591f58daec68cfdca197e79e3

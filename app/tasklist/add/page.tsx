@@ -44,8 +44,11 @@ export default function AddTaskPage() {
     setIsSubmitting(true);
 
     try {
-      const stored = window.localStorage.getItem(STORAGE_KEY);
-      const existing: StoredTask[] = stored ? JSON.parse(stored) : [];
+      const extraMeta = [
+        `Category: ${category}`,
+        `Priority: ${priority}`,
+        `Due date: ${dueDate}`,
+      ].join(" | ");
 
       const newTask: StoredTask = {
         id: `task-${Date.now()}`,
@@ -57,15 +60,21 @@ export default function AddTaskPage() {
         completed: false,
       };
 
-      const updated = [newTask, ...existing];
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      await createTask({
+        title: title.trim(),
+        description: mergedDescription,
+      });
 
       alert("Task created successfully!");
       router.push("/tasklist");
       router.refresh();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Submission Failure:", error);
-      setErrorMessage(error.message || "Something went wrong while saving.");
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : "Something went wrong while saving.";
+      setErrorMessage(message);
     } finally {
       setIsSubmitting(false);
     }
