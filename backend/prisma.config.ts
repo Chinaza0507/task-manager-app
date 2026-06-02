@@ -13,6 +13,6 @@ export default defineConfig({
   datasource: {
     // Type Safe env() helper
     // Does not replace the need for dotenv
-    url: env("DATABASE_URL"),
+    url: "postgresql://postgres:aWZhLgcyiZudrDEmAbmYlNSPqvYjncTV@zephyr.proxy.rlwy.net:56260/railway",
   },
 });
