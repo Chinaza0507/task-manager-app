@@ -191,12 +191,41 @@ export default function TaskListPage() {
   const openTasks = filteredTasks.filter((t) => !t.completed);
   const completedTasks = filteredTasks.filter((t) => t.completed);
 
-  const toggleTask = (id: string) => {
+  const toggleTask = async (id: string) => {
+    const current = tasks.find((task) => task.id === id);
+    if (!current) return;
+
+    const nextCompleted = !current.completed;
+
     setTasks((prev) =>
       prev.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task,
+        task.id === id
+          ? {
+              ...task,
+              completed: nextCompleted,
+              dueLabel: nextCompleted ? "Completed" : "No due date",
+            }
+          : task,
       ),
     );
+
+    try {
+      await updateTaskCompletion(Number(id), nextCompleted);
+    } catch (error: unknown) {
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === id
+            ? {
+                ...task,
+                completed: current.completed,
+                dueLabel: current.completed ? "Completed" : "No due date",
+              }
+            : task,
+        ),
+      );
+
+      setErrorMessage(getErrorMessage(error, "Could not update task status."));
+    }
   };
 
   const deleteTask = (id: string) => {

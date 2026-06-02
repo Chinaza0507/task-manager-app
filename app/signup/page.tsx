@@ -11,7 +11,7 @@ export default function SignUpPage() {
         <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
           {/* LEFT: form */}
           <section className="relative py-10 lg:py-14 flex items-center">
-            <div className="w-full max-w-[460px]">
+            <div className="w-full max-w-115">
               <Link href="/" className="inline-flex items-center gap-3">
                 <span className="relative w-10 h-10 rounded-xl bg-white border border-[#DDD5EE] flex items-center justify-center overflow-hidden">
                   <Image
@@ -41,11 +41,7 @@ export default function SignUpPage() {
                 onSubmit={(e) => {
                   e.preventDefault();
                   // UI-only for now
-<<<<<<< HEAD
                   window.location.href = "/login";
-=======
-                  window.location.href = "/dashboard";
->>>>>>> 6e334ba246ab83a591f58daec68cfdca197e79e3
                 }}
               >
                 <div>

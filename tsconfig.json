@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "app/timer/_components/soundSettingSettings"  ],
   "exclude": ["node_modules"]
 }

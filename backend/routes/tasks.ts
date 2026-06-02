@@ -60,6 +60,29 @@ router.post("/", async (req, res) => {
       res.status(500).json({ error: "Failed to create task" })
     }
   })
+  // GET /tasks
+  router.get("/", async (req: Request, res: Response) => {
+    try {
+      const completedParam = req.query.completed as string | undefined;
+
+      const where =
+        completedParam === "true"
+          ? { deleted_at: null, completed: true }
+          : completedParam === "false"
+            ? { deleted_at: null, completed: false }
+            : { deleted_at: null };
+
+      const tasks = await prisma.task.findMany({
+        where,
+        orderBy: { created_at: "desc" },
+      });
+
+      return res.json(tasks);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+      return res.status(500).json({ error: "Failed to fetch tasks" });
+    }
+  });
 
   //GET /tasks/today
   //SChedule tasks for today
@@ -246,6 +269,35 @@ import prisma from "../db.js";
 
 const router = express.Router();
 
+function parseId(param: string) {
+  const id = Number(param);
+  return Number.isInteger(id) ? id : null;
+}
+
+// GET /tasks
+router.get("/", async (req: Request, res: Response) => {
+  try {
+    const completedParam = req.query.completed as string | undefined;
+
+    const where =
+      completedParam === "true"
+        ? { deleted_at: null, completed: true }
+        : completedParam === "false"
+          ? { deleted_at: null, completed: false }
+          : { deleted_at: null };
+
+    const tasks = await prisma.task.findMany({
+      where,
+      orderBy: { created_at: "desc" },
+    });
+
+    return res.json(tasks);
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    return res.status(500).json({ error: "Failed to fetch tasks" });
+  }
+});
+
 // Create task
 router.post("/", async (req: Request, res: Response) => {
   const { title, description, deadline, start_time, end_time, task_list_id } =
@@ -262,7 +314,6 @@ router.post("/", async (req: Request, res: Response) => {
     return res.status(400).json({ error: "Title is required" });
   }
 
-  // Conflict detection for overlapping tasks in same list
   if (start_time && end_time) {
     if (new Date(start_time) >= new Date(end_time)) {
       return res
@@ -386,31 +437,63 @@ router.get("/search", async (req: Request, res: Response) => {
 
 // PATCH /tasks/:id/complete
 router.patch("/:id/complete", async (req: Request, res: Response) => {
+  const id = parseId(req.params.id);
+  if (!id) return res.status(400).json({ error: "Invalid task id" });
+
   try {
     const task = await prisma.task.update({
-      where: { id: parseInt(req.params.id, 10) },
+      where: { id },
       data: { completed: true, status: "done" },
     });
     return res.json(task);
   } catch (error) {
     console.error(error);
-    return res
-      .status(500)
-      .json({ error: "Failed to mark task as completed" });
+    return res.status(404).json({ error: "Task not found" });
+  }
+});
+
+// PATCH /tasks/:id/status (toggle)
+router.patch("/:id/status", async (req: Request, res: Response) => {
+  const id = parseId(req.params.id);
+  if (!id) return res.status(400).json({ error: "Invalid task id" });
+
+  const { completed } = req.body as { completed?: boolean };
+  if (typeof completed !== "boolean") {
+    return res.status(400).json({ error: "completed must be boolean" });
+  }
+
+  try {
+    const task = await prisma.task.update({
+      where: { id },
+      data: { completed, status: completed ? "done" : "pending" },
+    });
+    return res.json(task);
+  } catch (error) {
+    console.error(error);
+    return res.status(404).json({ error: "Task not found" });
   }
 });
 
 // PATCH /tasks/:id/reschedule
 router.patch("/:id/reschedule", async (req: Request, res: Response) => {
+  const id = parseId(req.params.id);
+  if (!id) return res.status(400).json({ error: "Invalid task id" });
+
   const { start_time, end_time, deadline } = req.body as {
     start_time?: string;
     end_time?: string;
     deadline?: string;
   };
 
+  if (start_time && end_time && new Date(start_time) >= new Date(end_time)) {
+    return res
+      .status(400)
+      .json({ error: "Start time must be before end time" });
+  }
+
   try {
     const task = await prisma.task.update({
-      where: { id: parseInt(req.params.id, 10) },
+      where: { id },
       data: {
         ...(start_time && { start_time: new Date(start_time) }),
         ...(end_time && { end_time: new Date(end_time) }),
@@ -421,44 +504,49 @@ router.patch("/:id/reschedule", async (req: Request, res: Response) => {
     return res.json(task);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Failed to reschedule task" });
+    return res.status(404).json({ error: "Task not found" });
   }
 });
 
 // DELETE /tasks/:id (soft delete)
 router.delete("/:id", async (req: Request, res: Response) => {
+  const id = parseId(req.params.id);
+  if (!id) return res.status(400).json({ error: "Invalid task id" });
+
   try {
     await prisma.task.update({
-      where: { id: parseInt(req.params.id, 10) },
+      where: { id },
       data: { deleted_at: new Date() },
     });
     return res.json({ message: "Task deleted successfully" });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Failed to delete task" });
+    return res.status(404).json({ error: "Task not found" });
   }
 });
 
 // DELETE /tasks/:id/permanent
 router.delete("/:id/permanent", async (req: Request, res: Response) => {
+  const id = parseId(req.params.id);
+  if (!id) return res.status(400).json({ error: "Invalid task id" });
+
   try {
-    await prisma.task.delete({
-      where: { id: parseInt(req.params.id, 10) },
-    });
+    await prisma.task.delete({ where: { id } });
     return res.json({ message: "Task permanently deleted" });
   } catch (error) {
     console.error(error);
-    return res
-      .status(500)
-      .json({ error: "Failed to permanently delete task" });
+    return res.status(404).json({ error: "Task not found" });
   }
 });
 
 // PATCH /tasks/:id/restore
 router.patch("/:id/restore", async (req: Request, res: Response) => {
+  const id = parseId(req.params.id);
+  if (!id) return res.status(400).json({ error: "Invalid task id" });
+
   try {
     const task = await prisma.task.update({
-      where: { id: parseInt(req.params.id, 10) },
+      where: { id },
       data: { deleted_at: null, status: "pending" },
     });
     return res.json({ message: "Task restored", task });
@@ -470,6 +558,9 @@ router.patch("/:id/restore", async (req: Request, res: Response) => {
 
 // PATCH /tasks/:id/list_type
 router.patch("/:id/list_type", async (req: Request, res: Response) => {
+  const id = parseId(req.params.id);
+  if (!id) return res.status(400).json({ error: "Invalid task id" });
+
   const { list_type } = req.body as { list_type?: "daily" | "weekly" | null };
   const valid = ["daily", "weekly", null];
 
@@ -481,7 +572,7 @@ router.patch("/:id/list_type", async (req: Request, res: Response) => {
 
   try {
     const task = await prisma.task.update({
-      where: { id: parseInt(req.params.id, 10) },
+      where: { id },
       data: { list_type: list_type ?? null },
     });
     return res.json(task);

@@ -74,22 +74,22 @@ export default function DashboardShell({
       },
       {
         label: "Task list",
-        href: "#",
+        href: "/tasklist",
         icon: <ListChecks size={18} strokeWidth={2} />,
       },
       {
         label: "Calendar",
-        href: "#",
+        href: "/calendar",
         icon: <Calendar size={18} strokeWidth={2} />,
       },
       {
         label: "Focus timer",
-        href: "#",
+        href: "/timer",
         icon: <Clock size={18} strokeWidth={2} />,
       },
       {
         label: "Folders",
-        href: "#",
+        href: "/dashboard/folders",
         icon: <Folder size={18} strokeWidth={2} />,
       },
     ],
