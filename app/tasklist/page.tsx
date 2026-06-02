@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { SlidersHorizontal } from "lucide-react";
 import StudyGroupActivePill from "@/components/StudyGroupActivePill";
 import FilterChip from "./_components/FilterChip";
 import TaskListCard from "./_components/TaskListCard";
@@ -13,7 +14,7 @@ type Task = {
   id: string;
   title: string;
   description?: string;
-  category: "Mathematics" | "History" | "Physics";
+  category: string;
   priority: "High" | "Medium" | "Low";
   dueLabel: string;
   dueSoon?: boolean;
@@ -24,31 +25,33 @@ type Task = {
   completed?: boolean;
 };
 
-type FilterKey =
-  | "All Tasks"
-  | "Mathematics"
-  | "History"
-  | "High Priority"
-  | "Next 48h";
-
-const FILTERS: FilterKey[] = [
-  "All Tasks",
-  "Mathematics",
-  "History",
-  "High Priority",
-  "Next 48h",
-];
-
-const CATEGORY_STYLES: Record<Task["category"], string> = {
-  Mathematics: "bg-[#E9D5FF] text-[#6D28D9]",
-  History: "bg-[#FBD4B7] text-[#EA580C]",
-  Physics: "text-[#22C55E]",
+type StoredTask = {
+  id: string;
+  title: string;
+  description?: string;
+  category: string;
+  priority: "High" | "Medium" | "Low";
+  dueDate: string;
+  completed?: boolean;
 };
+
+const STORAGE_KEY = "taskpilot.tasks";
+
+const STATIC_FILTERS = ["All Tasks", "High Priority", "Next 48h"];
+
+const CATEGORY_STYLE_POOL = [
+  "bg-[#E9D5FF] text-[#6D28D9]",
+  "bg-[#FBD4B7] text-[#EA580C]",
+  "bg-[#BBF7D0] text-[#15803D]",
+  "bg-[#BAE6FD] text-[#0369A1]",
+  "bg-[#FDE68A] text-[#B45309]",
+  "bg-[#FECDD3] text-[#BE123C]",
+];
 
 const PRIORITY_STYLES: Record<Task["priority"], string> = {
   High: "bg-[#FCA5A5] text-[#B91C1C]",
   Medium: "bg-[#FED7AA] text-[#C2410C]",
-  Low: "text-[#2563EB]",
+  Low: "bg-[#BFDBFE] text-[#2563EB]",
 };
 
 const INITIAL_TASKS: Task[] = [
@@ -83,27 +86,110 @@ const INITIAL_TASKS: Task[] = [
   },
 ];
 
+function toIsoDate(date: Date) {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, "0");
+  const day = `${date.getDate()}`.padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function storedTaskToTask(s: StoredTask): Task {
+  const due = new Date(s.dueDate);
+  const now = new Date();
+  const diffHours = (due.getTime() - now.getTime()) / (1000 * 60 * 60);
+  const dueSoon = diffHours >= 0 && diffHours <= 48;
+  const overdue = diffHours < 0;
+
+  const dueLabel = s.completed
+    ? "Completed"
+    : overdue
+      ? "Overdue"
+      : dueSoon
+        ? "Due Soon"
+        : `Due ${due.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
+
+  return {
+    id: s.id,
+    title: s.title,
+    description: s.description,
+    category: s.category,
+    priority: s.priority,
+    dueLabel,
+    dueSoon,
+    completed: s.completed ?? false,
+  };
+}
+
 export default function TaskListPage() {
-  const [activeFilter, setActiveFilter] = useState<FilterKey>("All Tasks");
+  const [activeFilter, setActiveFilter] = useState("All Tasks");
   const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS);
 
-  const filteredTasks = useMemo(() => {
-    switch (activeFilter) {
-      case "Mathematics":
-        return tasks.filter((task) => task.category === "Mathematics");
-      case "History":
-        return tasks.filter((task) => task.category === "History");
-      case "High Priority":
-        return tasks.filter((task) => task.priority === "High");
-      case "Next 48h":
-        return tasks.filter((task) => task.dueSoon);
-      default:
-        return tasks;
+  useEffect(() => {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    const parsed: StoredTask[] = stored ? JSON.parse(stored) : [];
+    const storedIds = new Set(parsed.map((t) => t.id));
+
+    const missingInitial = INITIAL_TASKS.filter(
+      (t) => !storedIds.has(t.id),
+    ).map(
+      (t): StoredTask => ({
+        id: t.id,
+        title: t.title,
+        description: t.description,
+        category: t.category,
+        priority: t.priority,
+        dueDate: toIsoDate(new Date()),
+        completed: t.completed ?? false,
+      }),
+    );
+
+    if (missingInitial.length > 0) {
+      window.localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify([...missingInitial, ...parsed]),
+      );
     }
+
+    const all = [...missingInitial, ...parsed];
+    const seen = new Set<string>();
+    const deduped = all.filter((t) => {
+      if (seen.has(t.id)) return false;
+      seen.add(t.id);
+      return true;
+    });
+
+    setTasks(deduped.map(storedTaskToTask));
+  }, []);
+
+  const categoryStyleMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    const allCategories = [...new Set(tasks.map((t) => t.category))];
+    allCategories.forEach((cat, i) => {
+      map[cat] = CATEGORY_STYLE_POOL[i % CATEGORY_STYLE_POOL.length];
+    });
+    return map;
+  }, [tasks]);
+
+  const dynamicCategoryFilters = useMemo(() => {
+    return [...new Set(tasks.map((t) => t.category))];
+  }, [tasks]);
+
+  const allFilters = [
+    ...STATIC_FILTERS.slice(0, 1),
+    ...dynamicCategoryFilters,
+    ...STATIC_FILTERS.slice(1),
+  ];
+
+  const filteredTasks = useMemo(() => {
+    if (activeFilter === "All Tasks") return tasks;
+    if (activeFilter === "High Priority")
+      return tasks.filter((t) => t.priority === "High");
+    if (activeFilter === "Next 48h") return tasks.filter((t) => t.dueSoon);
+    return tasks.filter((t) => t.category === activeFilter);
   }, [activeFilter, tasks]);
 
-  const openTasks = filteredTasks.filter((task) => !task.completed);
-  const completedTasks = filteredTasks.filter((task) => task.completed);
+  const openTasks = filteredTasks.filter((t) => !t.completed);
+  const completedTasks = filteredTasks.filter((t) => t.completed);
 
   const toggleTask = (id: string) => {
     setTasks((prev) =>
@@ -111,6 +197,16 @@ export default function TaskListPage() {
         task.id === id ? { ...task, completed: !task.completed } : task,
       ),
     );
+  };
+
+  const deleteTask = (id: string) => {
+    setTasks((prev) => prev.filter((task) => task.id !== id));
+
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    if (!stored) return;
+    const parsed: StoredTask[] = JSON.parse(stored);
+    const updated = parsed.filter((t) => t.id !== id);
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
   };
 
   return (
@@ -132,28 +228,13 @@ export default function TaskListPage() {
           <StudyGroupActivePill extraCount={3} />
         </div>
       </div>
-
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#E7E1F2] shadow-sm text-[13px] font-semibold text-[#151C27]">
-          <span className="inline-flex items-center justify-center w-4 h-4">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M4 6h16M7 12h10M10 18h4"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </span>
+          <SlidersHorizontal size={14} className="text-[#6B7280]" />
           Filter by:
         </div>
-        {FILTERS.map((filter) => (
+
+        {allFilters.map((filter) => (
           <FilterChip
             key={filter}
             label={filter}
@@ -173,7 +254,6 @@ export default function TaskListPage() {
           </select>
         </div>
       </div>
-
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_380px] gap-8">
         <div className="space-y-6">
           {openTasks.map((task) =>
@@ -182,13 +262,14 @@ export default function TaskListPage() {
                 key={task.id}
                 checked={false}
                 onToggle={() => toggleTask(task.id)}
+                onDelete={() => deleteTask(task.id)}
                 category={task.category}
                 priority={task.priority}
                 dueLabel={task.dueLabel}
                 title={task.title}
                 progressLabel={task.progressLabel ?? ""}
                 progressValue={task.progressValue}
-                categoryClassName={CATEGORY_STYLES[task.category]}
+                categoryClassName={categoryStyleMap[task.category]}
                 priorityClassName={PRIORITY_STYLES[task.priority]}
               />
             ) : (
@@ -196,6 +277,7 @@ export default function TaskListPage() {
                 key={task.id}
                 checked={false}
                 onToggle={() => toggleTask(task.id)}
+                onDelete={() => deleteTask(task.id)}
                 category={task.category}
                 priority={task.priority}
                 dueLabel={task.dueLabel}
@@ -203,7 +285,7 @@ export default function TaskListPage() {
                 description={task.description ?? ""}
                 files={task.files ?? 0}
                 comments={task.comments ?? 0}
-                categoryClassName={CATEGORY_STYLES[task.category]}
+                categoryClassName={categoryStyleMap[task.category]}
                 priorityClassName={PRIORITY_STYLES[task.priority]}
                 dueClassName={
                   task.dueSoon ? "text-[#DC2626]" : "text-[#6B7280]"
@@ -217,6 +299,7 @@ export default function TaskListPage() {
               key={task.id}
               checked
               onToggle={() => toggleTask(task.id)}
+              onDelete={() => deleteTask(task.id)}
               category={task.category}
               priority={task.priority}
               status={task.dueLabel}

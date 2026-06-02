@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check, Trash2 } from "lucide-react";
 
 type CompletedTaskCardProps = {
   category: string;
@@ -7,6 +7,7 @@ type CompletedTaskCardProps = {
   title: string;
   checked?: boolean;
   onToggle?: () => void;
+  onDelete?: () => void;
 };
 
 export default function CompletedTaskCard({
@@ -16,6 +17,7 @@ export default function CompletedTaskCard({
   title,
   checked = true,
   onToggle,
+  onDelete,
 }: CompletedTaskCardProps) {
   return (
     <div className="flex items-start gap-4 px-3 py-2">
@@ -35,7 +37,18 @@ export default function CompletedTaskCard({
           <span className="text-[#2563EB]">{priority}</span>
           <span className="ml-auto text-[#6B7280] font-medium">{status}</span>
         </div>
-        <div className="mt-2 text-[#6B7280] line-through">{title}</div>
+        <div className="mt-2 flex items-center justify-between">
+          <span className="text-[#6B7280] line-through">{title}</span>
+          <button
+            type="button"
+            aria-label="Delete task"
+            onClick={onDelete}
+            className="inline-flex items-center gap-1 text-[#6B7280] hover:text-[#DC2626] transition-colors ml-4"
+          >
+            <Trash2 size={14} />
+            <span className="text-[13px]">Delete</span>
+          </button>
+        </div>
       </div>
     </div>
   );

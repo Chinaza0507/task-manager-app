@@ -8,7 +8,7 @@ type StoredTask = {
   id: string;
   title: string;
   description?: string;
-  category: "Mathematics" | "History" | "Physics";
+  category: string;
   priority: "High" | "Medium" | "Low";
   dueDate: string;
   completed?: boolean;
@@ -21,7 +21,7 @@ export default function AddTaskPage() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("Mathematics");
+  const [category, setCategory] = useState("");
   const [priority, setPriority] = useState("Medium");
   const [dueDate, setDueDate] = useState("");
 
@@ -51,7 +51,7 @@ export default function AddTaskPage() {
         id: `task-${Date.now()}`,
         title: title.trim(),
         description: description.trim(),
-        category: category as StoredTask["category"],
+        category: category.trim() || "General",
         priority: priority as StoredTask["priority"],
         dueDate,
         completed: false,
@@ -138,16 +138,17 @@ export default function AddTaskPage() {
             >
               Category
             </label>
-            <select
+            <input
               id="category"
+              type="text"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
+              placeholder="e.g. Mathematics, Biology..."
               className="mt-2 w-full rounded-xl border border-[#E7E1F2] bg-white px-4 py-3 text-[14px] text-[#111827] shadow-sm outline-none focus:ring-2 focus:ring-[#7C3AED]/30"
-            >
-              <option value="Mathematics">Mathematics</option>
-              <option value="History">History</option>
-              <option value="Physics">Physics</option>
-            </select>
+            />
+            <p className="mt-1 text-[12px] text-[#6B7280]">
+              Leave blank to default to "General"
+            </p>
           </div>
 
           <div>
