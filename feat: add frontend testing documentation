@@ -1,0 +1,75 @@
+Frontend Testing:  Task Manager App
+1. Introduction
+This document shows how we tested the frontend of the Task Manager App. Testing makes sure the buttons, forms, and pages work correctly for the user.
+ Unit Tests:  Test small parts, like a single button or a date format.
+ Integration Tests: Test how parts work together, like typing a task and seeing it on the list.
+ 2. Test Cases
+2.1. Adding Tasks
+TC-01: Empty Form
+ What we tested: Submitting a blank task.
+ Steps: We clicked the “Add Task” button without typing anything in the input box.
+  Result:  The app blocks the submission and shows an error message like “Title is required”.
+
+TC-02: Add Valid Task
+ What we tested: Adding a normal task successfully.
+ Steps: We typed a task title into the input box and click the “Add Task” button.
+ Result: The new task appears on the list. The input box becomes empty.
+
+ 2.2. Managing Tasks
+TC-03: Complete Task
+ What we tested: Marking a task as done.
+ Steps: We clicked the checkbox or complete button on a task.
+ Result: The task changes color or gets a line through the text to show it is finished.
+
+TC-04: Edit Task
+ What we tested: Changing the text of a task.
+ Steps: We clicked the “Edit” button, type new text, and click “Save”.
+ Result: The task shows the new text on the screen immediately.
+
+TC-05: Delete Task
+ What we tested: Removing a task.
+ Steps: We clicked the “Delete” button on a task.
+  Result: The task disappears from the screen completely.
+
+2.3. Search and Filters
+TC-06: Search Bar
+ What we tested: Finding a task by typing.
+ Steps: We typed a specific word into the search box.
+ Result: The screen updates to show only the tasks that match that word.
+
+TC-07: Filter Tabs
+ What we tested: Filtering by status.
+ Steps: We clicked on the “Completed” tab.
+  Result: The screen hides active tasks and only shows finished tasks.
+
+TC-08: No Results
+ What we tested: Searching for a word that does not exist.
+ Steps: We typed a random word into the search box.
+ Result: The list becomes empty and shows a text message saying “No tasks found”.
+
+ 3. Code Example
+This is a simple code example to test adding a task:
+
+```javascript
+Import { render, screen } from ‘@testing-library/react’;
+Import userEvent from ‘@testing-library/user-event’;
+Import App from ‘./App’;
+
+Test(‘User can add a new task’, async () => {
+  Render(<App />);
+
+  // 1. Find the input box and the button
+  Const input = screen.getByPlaceholderText(‘Type a task...’);
+  Const button = screen.getByText(‘Add Task’);
+
+  // 2. Simulate the user typing and clicking
+  Await userEvent.type(input, ‘Buy milk’);
+  Await userEvent.click(button);
+
+  // 3. Check if the task is on the screen
+  Expect(screen.getByText(‘Buy milk’)).toBeInTheDocument();
+});
+
+```
+
+
