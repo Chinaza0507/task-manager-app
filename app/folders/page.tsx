@@ -1,5 +1,6 @@
 "use client";
-
+import DashboardShell from "@/components/DashboardShell";
+import Link from "next/link";
 import { useState } from "react";
 import { Plus, X, Pin, Pencil, Trash2 } from "lucide-react";
 
@@ -160,11 +161,12 @@ export default function FoldersPage() {
   };
 
   return (
-    <div className="pt-0 pb-24 relative min-h-[calc(100vh-76px)]">
-      <div className="mb-4 -mt-10">
-        <h1 className="text-[48px] font-bold text-[#111827] mb-2">
-          📁 Folders
-        </h1>
+    <DashboardShell>
+      <div className="pt-0 pb-24 relative min-h-[calc(100vh-76px)]">
+        <div className="mb-4 -mt-10">
+          <h1 className="text-[48px] font-bold text-[#111827] mb-2">
+            📁 Folders
+          </h1>
         <p className="text-[#6B7280] text-[14px]">
           Organize your academic files, assignments, and study materials in one
           place.
@@ -212,13 +214,20 @@ export default function FoldersPage() {
               </button>
             </div>
 
-            <FolderIcon />
-            <h3 className="text-[18px] font-semibold text-[#111827] leading-tight mb-2 px-1">
-              {folder.title}
-            </h3>
-            <p className="text-[#6B7280] text-[13px] leading-relaxed px-1">
-              {folder.description}
-            </p>
+            <Link
+              href={`/folders/${folder.id}`}
+              className="block cursor-pointer"
+            >
+              <FolderIcon />
+                      
+              <h3 className="text-[18px] font-semibold text-[#111827] leading-tight mb-2 px-1">
+                {folder.title}
+              </h3>
+                      
+              <p className="text-[#6B7280] text-[13px] leading-relaxed px-1">
+                {folder.description}
+              </p>
+            </Link>
           </div>
         ))}
       </div>
@@ -308,5 +317,6 @@ export default function FoldersPage() {
         </div>
       )}
     </div>
+    </DashboardShell>
   );
 }
